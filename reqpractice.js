@@ -24,6 +24,53 @@ app.listen(port, (req, res) => {
   console.log("hello abhi world");
 });
 
+app.get("/jokes/:id",(req,res)=>{
+  console.log(req.params)
+  const id = parseInt(req.params.id);
+  const foundJoke= jokes.find((joke)=>joke.id===id)
+  res.json(foundJoke);
+})
+app.get("/jokes/filter",(req,res)=>{
+  const type = req.query.type;
+  const filteract= jokes.filter((joke)=>joke.jokeType===type)
+  res.json(filteract)
+})
+app.post("/createjoke",(req,res)=>{
+  const newJoke ={
+    id:jokes.length +1,
+    jokeText:req.body.text,
+    jokeType:req.body.type,
+};
+jokes.push(newJoke);
+console.log(jokes.slice(-1));
+res.json(newJoke);
+})
+app.put("/updatejokes/:id",(req,res)=>{
+  const id = parseInt(req.params.id);
+  const replacementJoke ={
+    id:id,
+    jokeText:req.body.text,
+    jokeType:req.body.type,
+  }
+  const searchIndex =jokes.findIndex((joke)=>joke.id===id)
+  jokes[searchIndex]=replacementJoke;
+  res.json(replacementJoke)
+})
+app.patch("/changes/:id",(req,res) =>{
+  const id =parseInt(req.params.id) ;
+  const existingjoke=jokes.find((joke)=>joke.id===id)
+  const replacementjoke={
+    id:id,
+    jokeText:req.body.text || existingjoke.jokeText,
+    jokeType:req.body.type || existingjoke.jokeType,
+  }
+  const searchIndex = jokes.findIndex((joke)=>joke.id===id)
+  jokes[searchIndex]=replacementJoke;
+  res.json(replacementjoke)
+
+
+})
+
 let jokes = [
   {
     id: 1,
@@ -421,7 +468,7 @@ let jokes = [
   },
   {
     id: 70,
-    jokeText:
+    jokeText: 
       "Why do we never tell secrets on a farm? Because the potatoes have eyes and the corn has ears.",
     jokeType: "Wordplay",
   },
